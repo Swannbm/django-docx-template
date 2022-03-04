@@ -2,7 +2,6 @@
 
 
 {% block content %}
-<a href="{% url 'docx_template:data_source_list' %}"><i class="bi bi-arrow-left"></i></a>
 <h1 class="mt-5 mb-0"><i class="bi bi-box"></i> {{ object.label }}</h1>
 <span class="text-muted mt-0">{{ data_source_class }}</a>
 
@@ -21,7 +20,7 @@
             <th scope="row">{{ definition.name }}</th>
             <td>{{ definition.type }}</td>
             <td>{{ definition.help }}</td>
-            <td>{{ definition.example_values }}</td>
+            <td>{{ definition.examples_values }}</td>
         </tr>
         {% endfor %}
     </tbody>
