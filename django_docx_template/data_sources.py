@@ -91,7 +91,7 @@ class DataSource:
                     "name": field_name,
                     "type": "N/A",
                     "help": field_value.help,
-                    "examples_values": field_value.examples,
+                    "examples_values": ", ".join(field_value.examples),
                 }
             )
         return definition
