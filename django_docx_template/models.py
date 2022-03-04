@@ -4,6 +4,7 @@ import random
 
 from django.conf import settings
 from django.db import models
+from django.urls import reverse
 from django.utils.text import slugify
 
 from docxtpl import DocxTemplate as DocxEngine
@@ -12,7 +13,7 @@ from .utils import import_from_string, merge_url_parts
 from .data_sources import DataSource
 
 
-def upload_to_hook(instance: 'DocxTemplate', filename: str) -> str:
+def upload_to_hook(instance: "DocxTemplate", filename: str) -> str:
     """This is a hook to set a upload_to throug settings"""
     try:
         func = locate(settings.DJANGO_DOCX_TEMPLATES["upload_to"])
@@ -34,11 +35,15 @@ class DocxTemplate(models.Model):
     def data_source(self) -> DataSource:
         return import_from_string(self.data_source_class)
 
-    def get_url(self) -> str:
-        url = settings.DJANGO_DOCX_TEMPLATES["docx_template_url"]
-        url = url.replace("<slug>", self.slug)
-        url = url.replace("<slug:slug>", self.slug)
-        return merge_url_parts(url, self.data_source.get_url())
+    def get_absolute_url(self):
+        return reverse("docx_template:detail", args={"slug": self.slug})
+
+    def get_merge_url(self) -> str:
+        """This method is used for building urls.py, therefore it can't use reverse()"""
+        return merge_url_parts(
+            f"templates/merge/{self.slug}",
+            self.data_source.get_url(),
+        )
 
     def save(self, *args, **kwargs) -> None:
         if not self.slug:
