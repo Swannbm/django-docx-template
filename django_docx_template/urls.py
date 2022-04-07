@@ -20,6 +20,7 @@ def get_merge_urls():
 
 
 urlpatterns = [
+    path("", views.TemplateListView.as_view(), name="base_url"),
     path("templates", views.TemplateListView.as_view(), name="list"),
     path("templates/detail/<slug>", views.TemplateDetailView.as_view(), name="detail"),
     path("templates/create", views.TemplateCreateView.as_view(), name="create"),

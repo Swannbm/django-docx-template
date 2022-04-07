@@ -55,6 +55,9 @@ class TemplateDetailView(DetailView):
     def get_context_data(self, **kwargs):
         kwargs["base_template"] = "django_docx_template/base.html"
         examples = self.object.data_source.get_all_example_combinations()
+        kwargs["url_name"] = f"{self.object.slug}-merge"
+        base_url = reverse("docx_template:base_url")[1:]  # remove leading /
+        kwargs["url_merge"] = f'{base_url}{self.object.get_merge_url()}'
         if examples:
             kwargs["examples"] = [_.values() for _ in examples]
             kwargs["example_headers"] = examples[0].keys()
@@ -86,6 +89,7 @@ class TemplateMergeView(View):
         )
         # TODO use context data to improve filenaming
         filename = template.name.replace(" ", "_")
+        filename += ".docx"
         return FileResponse(
             buffer, content_type=content_type, as_attachment=True, filename=filename
         )

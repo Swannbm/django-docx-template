@@ -7,14 +7,28 @@ from django.db.models import F
 
 class Field:
     data_type = None
+    data_label = "Not provided"
 
     def __init__(self, help=None, examples=None, source=None):
         self.help = help
-        self.examples = examples
+        if isinstance(examples, list):
+            self.examples = [str(e) for e in examples]
+        else:
+            self.examples = str(examples)
         self.source = source
 
     def to_str(self, value):
         return str(value)
+
+
+class CharField(Field):
+    data_type = str
+    data_label = "String"
+
+
+class IntField(Field):
+    data_type = int
+    data_label = "Integer"
 
 
 # rename as DataViews ? it's more close to class based views than to models
@@ -60,7 +74,10 @@ class DataSource:
         return "/".join(parts)
 
     def get_data_fields(self):
-        return {n: v for n, v in getmembers(self) if isinstance(v, Field)}
+        """Return all fields of the datasource ordered by name.
+        DataSource fields must inherit from Field class."""
+        fields = {n: v for n, v in getmembers(self) if isinstance(v, Field)}
+        return {k: fields[k] for k in sorted(fields.keys())}
 
     def get_data_definition(self) -> dict():
         """Return a list of all items that is available in this datasource. It's used by
@@ -89,7 +106,7 @@ class DataSource:
             definition.append(
                 {
                     "name": field_name,
-                    "type": "N/A",
+                    "type": field_value.data_label,
                     "help": field_value.help,
                     "examples_values": ", ".join(field_value.examples),
                 }

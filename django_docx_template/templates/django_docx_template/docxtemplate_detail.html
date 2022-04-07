@@ -9,24 +9,22 @@
 </div>
 </h1>
 
-<p>
+<p class="mb-5">
     <strong>Template:</strong> {{ object.docx.name }}
     <br/><strong>Data_source:</strong> {{ object.data_source.get_label }}
     <a href="{% url 'docx_template:data_source' object.data_source_class %}">
         <i class="bi bi-eye"></i>
     </a>
-    <br/><strong>Url name:</strong> {{ object.slug}}-merge <i><span class="text-muted">(For use in reverse() or templates)</span></i>
-    <br/><strong>Url:</strong> {{ object.get_url}}
+    <br/><strong>Url name:</strong> {{ object.slug }}-merge <i><span class="text-muted">(For use in reverse() or templates)</span></i>
+    <br/><strong>Url:</strong> {{ object.get_merge_url }}
 </p>
 
 <p>
-    <h2 class="mt-5">Test with database data:</h2>
-    <div class="alert alert-danger" role="alert">
-        This is not working very well and need to be fixed.
-    </div>  
-    <br/>Add url start and replace parameters:
+    <h2 class="mt-5">Test with database data</h2>
+    
     <div class="input-group mb-3">
-        <input id="merge-url" type="text" class="form-control" placeholder="url" aria-label="Recipient's username" aria-describedby="basic-addon2" value="{{ object.get_url}}">
+        <span class="input-group-text" id="basic-addon3">Replace parameters:</span>
+        <input id="merge-url" type="text" class="form-control" placeholder="url" aria-label="Recipient's username" aria-describedby="basic-addon2" value="{{ url_merge }}">
         <button class="btn btn-secondary" type="button" id="btn-dl-merge"><i class="bi bi-file-earmark-arrow-down"></i> Merge</button>
     </div>
 
@@ -37,13 +35,14 @@
     
     <script>
         $("#btn-dl-merge").click(function() {
-            window.location.href=$("#merge-url").val()
+            let url = window.location.origin + "/" + $("#merge-url").val()
+            window.location.href = url
         })
     </script>
 </p>
 
 <p>
-    <h2 class="mt-5">Test with example data:</h2>
+    <h2 class="mt-5">Test with example data</h2>
     <table class="table">
         <thead>
             <tr>

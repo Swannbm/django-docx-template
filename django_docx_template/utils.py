@@ -3,6 +3,9 @@ from django.conf import settings
 
 
 def import_from_string(class_path):
+    """Return an existing datasource according to the given path.
+    You don't need to list the datasource in your settings to be valid (TODO: to be
+    confirmed)"""
     data_source_class = locate(class_path)
     if not data_source_class:
         raise KeyError(f"Unknow DataSource {class_path}")
@@ -11,7 +14,8 @@ def import_from_string(class_path):
 
 
 def get_all_data_sources():
-    sources = settings.DJANGO_DOCX_TEMPLATES['data_sources']
+    """Return all datasources listed in the settings."""
+    sources = settings.DJANGO_DOCX_TEMPLATES["data_sources"]
     return [import_from_string(source) for source in sources]
 
 
