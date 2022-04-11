@@ -1,24 +1,21 @@
-[tool.poetry]
+[project]
 name = "django-docx-template"
 version = "0.1.0"
 description = "Django-Template-Docx provide all the necessities to easily include docx merging capabilities to any Django project."
-authors = ["Swann <swann.bouviermuller@gmail.com>"]
-license = "MIT"
 readme = "README.md"
-homepage = "..."
-repository = "https://github.com/Swannbm/django-docx-template"
-documentation = "README.md"
+requires-python = "^3.9"
+license = "MIT"
+authors = ["Swann <swann.bouviermuller@gmail.com>"]
 keywords = ["Django", "Docx", "merge", "jinja"]
-
-[tool.poetry.dependencies]
-python = "^3.9"
-
-[tool.poetry.dev-dependencies]
-pytest = "^5.2"
+dependencies = [
+    "requests >=2.6",
+    "configparser; python_version == '2.7'",
+]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.poetry.urls]
-issues = "https://github.com/Swannbm/django-docx-template/issues"
+[project.urls]
+Source = "https://github.com/Swannbm/django-docx-template"
+Issues = "https://github.com/Swannbm/django-docx-template/issues"
