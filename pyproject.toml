@@ -3,7 +3,6 @@ name = "django-docx-template"
 version = "0.1.0"
 description = "Django-Template-Docx provide all the necessities to easily include docx merging capabilities to any Django project."
 authors = ["Swann <swann.bouviermuller@gmail.com>"]
-url = ""
 license = "MIT"
 readme = "README.md"
 homepage = "..."
