@@ -52,7 +52,7 @@ class Image(ConverterMixin):
         . width: horizontal size of the image in the docx in millimeters
         . height: vertical size of the image in the docx in millimeters
         """
-        if not Path(img_path).is_file:
+        if not Path(img_path).is_file():
             raise ValueError("Provided path is not a file")
         self.img_path = img_path
         self.width = Mm(width) if width else None
@@ -204,7 +204,7 @@ class DataSource:
         # return Union(list[list[Any]]|list[Any])
         fields = self.get_data_fields()
         examples = list()
-        for name, field in fields.items():
+        for _name, field in fields.items():
             if isinstance(field.examples, list):
                 examples.append(field.examples)
             else:
