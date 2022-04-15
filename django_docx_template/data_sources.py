@@ -1,5 +1,8 @@
+from docxtpl import InlineImage
+from docx.shared import Mm
 from inspect import getmembers
 import itertools
+from pathlib import Path
 
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import F
