@@ -31,6 +31,38 @@ class IntField(Field):
     data_label = "Integer"
 
 
+class ConverterMixin:
+    """Interface to find which context element needs to be converted"""
+    def convert(self, docx_engine):
+        raise NotImplementedError("This method (convert) needs to be implemented")
+
+
+class Image(ConverterMixin):
+    """Define the image to add to the template"""
+
+    def __init__(self, img_path, width=None, height=None):
+        """Initialize an image to be merged into the final document
+
+        Parameters
+        ==========
+        . img_path: file path to a png
+        . width: horizontal size of the image in the docx in millimeters
+        . height: vertical size of the image in the docx in millimeters
+        """
+        if not Path(img_path).is_file:
+            raise ValueError("Provided path is not a file")
+        self.img_path = img_path
+        self.width = Mm(width) if width else None
+        self.height = Mm(height) if height else None
+
+    def convert(self, docx_engine):
+        """Return docx_template equivalent of this image, hydrating with the
+        docx_template that will be merged"""
+        return InlineImage(
+            docx_engine, self.img_path, width=self.width, height=self.height,
+        )
+
+
 # rename as DataViews ? it's more close to class based views than to models
 class DataSource:
     # human readible title or name

@@ -50,9 +50,38 @@ class DocxTemplate(models.Model):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
+    def _clean_context(self, docx_engine, context):
+        """Hook to transform context data before merging document."""
+        self._clean_context_image(docx_engine, context)
+
+    def _clean_context_image(self, docx_engine, context):
+        """
+        Because we need a reference to DocxTemplate to correctly add image
+        we have to wait the very last moment to init InLine object.
+
+        Example of 'context' parameter:
+        ===============================
+
+        context["images"] = [
+            Image(path/to/file.png"),
+            Image(path/to/file.png", width=170),
+        ]
+
+        Todo
+        ====
+        . avoid storing all images in a specific part of the context, make a recursive
+        function to find all instances of previous class to replace it with correct
+        InLine image
+        """
+        context["cleaned_images"] = list()
+        images = context.get("images", list())
+        for image in images:
+            context["cleaned_images"].append(image.convert())
+
     def _merge(self, context: dict()) -> BytesIO:
         """Load actual docx file and merge all fields. Return the final doc as BytesIO."""
         docx_engine = DocxEngine(self.docx)
+        self._clean_context(docx_engine, context)
         docx_engine.render(context)
         buffer = BytesIO()
         docx_engine.save(buffer)

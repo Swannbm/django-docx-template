@@ -7,6 +7,8 @@ from .models import DocxTemplate
 app_name = "docx_template"
 
 
+# Attention, lors de la création d'un template, Django ne connaîtra pas l'url de merge
+# avant le prochain redémarrage
 def get_merge_urls():
     return [
         path(
