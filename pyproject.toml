@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-docx-template"
-version = "0.1.0"
+version = "0.2.0"
 description = "Django-Template-Docx provide all the necessities to easily include docx merging capabilities to any Django project."
 authors = ["Swann <swann.bouviermuller@gmail.com>"]
 license = "MIT"
