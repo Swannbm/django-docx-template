@@ -9,6 +9,10 @@ Main functionnalities:
 
 ## Install
 
+`pipenv install git+https://github.com/Swannbm/django-docx-template#egg=django-docx-template`
+
+but soon :
+
 `pip install django-docx-template`
 
 Then update your settings:
@@ -42,7 +46,7 @@ First you'll need to create a source of data:
 
 ```python
 # my_app/data_sources.py
-from django_docx_template.data_sources import DataSource
+from django_docx_template import data_sources
 
 # let's imagine you have a Model Person
 from .models import Person
@@ -65,7 +69,7 @@ then you need to add the data source to your settings:
 ```python
 # config/settings.py
 ...
-DJANGO_DOCX_TEMPLATE = {
+DJANGO_DOCX_TEMPLATES = {
     "data_sources":[
         "my_app.data_sources.PersonDataSource",
     ]
