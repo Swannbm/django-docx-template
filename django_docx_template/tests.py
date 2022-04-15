@@ -32,8 +32,16 @@ class SimpleDataSource(data_sources.DataSource):
     last_name = data_sources.CharField(help="super help label")
     birth_year = data_sources.IntField(examples=[1982, 1992, 2002])
 
+
+class ImageDataSource(data_sources.DataSource):
     def get_context_data(self, *args, **kwargs):
-        return dict()
+        path = "django_docx_template/static/django_docx_template/test_image.png"
+        return {
+            "first_name": "First Name",
+            "last_name": "Last Name",
+            "birth_year": 2022,
+            "images": {"image_1": data_sources.Image(path, width=170, height=20)},
+        }
 
 
 class TestSimpleDataSource:
@@ -82,6 +90,38 @@ class TestSimpleDataSource:
         sds
 
 
+class TestImage:
+    def test_instance_isnstance_of_convertermixin(self):
+        path = "django_docx_template/static/django_docx_template/test_image.png"
+        img = data_sources.Image(path)
+        assert isinstance(img, data_sources.ConverterMixin)
+
+    def test_init_without_correct_file_path(self):
+        with pytest.raises(ValueError):
+            data_sources.Image("not/a/file/path")
+
+    def test_init(self):
+        from docx.shared import Mm
+        path = "django_docx_template/static/django_docx_template/test_image.png"
+        img = data_sources.Image(path)
+        assert img.img_path == path
+        assert img.width is None
+        assert img.height is None
+        img = data_sources.Image(path, width=60, height=70)
+        assert isinstance(img.width, Mm)
+        assert isinstance(img.height, Mm)
+
+    def test_convert(self):
+        from docxtpl import InlineImage
+        path = "django_docx_template/static/django_docx_template/test_image.png"
+        img = data_sources.Image(path, width=60, height=70)
+        inline_image = img.convert(None)
+        assert isinstance(inline_image, InlineImage)
+        assert inline_image.width == img.width
+        assert inline_image.width == img.width
+        assert inline_image.height == img.height
+
+
 @pytest.fixture
 def docx_template_fixtures(db):
     content = open("django_docx_template/test_doc.docx", "rb").read()
@@ -127,6 +167,17 @@ class TestDocxTemplate:
             name="Beautiful document",
             docx=suf,
             data_source_class="django_docx_template.tests.SimpleDataSource",
+        )
+        in_memory_doc = template.merge(item_3="from_keys")
+        assert isinstance(in_memory_doc, BytesIO)
+
+    def test_merge_with_image(self):
+        content = open("django_docx_template/test_doc.docx", "rb").read()
+        suf = SimpleUploadedFile("template.docx", content)
+        template = DocxTemplate(
+            name="Beautiful document",
+            docx=suf,
+            data_source_class="django_docx_template.tests.ImageDataSource",
         )
         in_memory_doc = template.merge(item_3="from_keys")
         assert isinstance(in_memory_doc, BytesIO)
