@@ -71,10 +71,6 @@ class DataSource:
     description = None
     # needed to build url automatically with required arguments
     url_args = None
-    # seems a very django way to go to looks like classical django stuff
-    model = None
-    queryset = None
-    fields = None
 
     def __init__(self, class_path):
         self.class_path = class_path
@@ -83,10 +79,6 @@ class DataSource:
         if not self.label:
             raise ImproperlyConfigured("DataSource.label is not set.")
         return self.label
-
-    def filter_url_args(self, url_kwargs):
-        """Return only data_source parameters from a list of parameters"""
-        return {n: v for n, v in url_kwargs.items() if n in self.url_args}
 
     def get_url(self):
         """Keys are the required arguments to get all context. For example,
@@ -104,6 +96,21 @@ class DataSource:
         """
         parts = [f"<{tags_type}:{name}>" for name, tags_type in self.url_args.items()]
         return "/".join(parts)
+
+    def filter_url_args(self, url_kwargs):
+        """Filter kwargs to return only those listed in url_args"""
+        return {n: v for n, v in url_kwargs.items() if n in self.url_args}
+
+    def get_context_data(self, **keys: dict()) -> dict():
+        raise NotImplementedError("Need to be overrided")
+
+
+# rename as DataViews ? it's more close to class based views than to models
+class ModelSource(DataSource):
+    # seems a very django way to go to looks like classical django stuff
+    model = None
+    queryset = None
+    fields = None
 
     def get_data_fields(self):
         """Return all fields of the datasource ordered by name.
