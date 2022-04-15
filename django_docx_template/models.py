@@ -62,10 +62,17 @@ class DocxTemplate(models.Model):
         Example of 'context' parameter:
         ===============================
 
-        context["images"] = [
-            Image(path/to/file.png"),
-            Image(path/to/file.png", width=170),
-        ]
+        context["images"] = {
+            "image_1": Image("path/to/file.png"),
+            "image_2": Image("path/to/file.png", width=170),
+        }
+
+        output:
+
+        context = {
+            "image_1": InlineImage(...),
+            "image_2": InlineImage(...),
+        }
 
         Todo
         ====
@@ -75,8 +82,8 @@ class DocxTemplate(models.Model):
         """
         context["cleaned_images"] = list()
         images = context.get("images", list())
-        for image in images:
-            context["cleaned_images"].append(image.convert())
+        for name, image in images.items():
+            context[name] = image.convert(docx_engine)
 
     def _merge(self, context: dict()) -> BytesIO:
         """Load actual docx file and merge all fields. Return the final doc as BytesIO."""
